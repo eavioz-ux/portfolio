@@ -1,17 +1,9 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import { PROFILE as DATA_PROFILE, SKILLS as DATA_SKILLS, PROJECTS as DATA_PROJECTS } from "./data.js";
 
-/* ══════════════ DEFAULT DATA ══════════════ */
-const DEFAULT_PROFILE = {
-  firstName: "Idan", lastName: "Avioz",
-  tagline: "Electronics \u00b7 IoT \u00b7 Embedded Systems",
-  bio: "Designing, building, and testing hardware from the ground up. Every project here was soldered, debugged, and brought to life by hand.",
-  aboutText: "I am an Electrical Engineering student who lives at the intersection of hardware and software. Every project here was physically built and tested, from soldering components to debugging firmware with an oscilloscope. I believe the best way to understand a system is to build it from scratch, fail, and iterate until it works.",
-  email: "eavioz@gmail.com",
-  linkedin: "https://www.linkedin.com/in/idan-avioz-0300703b4/",
-  github: "", cvUrl: "",
-};
-
-const DEFAULT_SKILLS = [];
+/* ══════════════ DEFAULT DATA (from data.js) ══════════════ */
+const DEFAULT_PROFILE = DATA_PROFILE;
+const DEFAULT_SKILLS = DATA_SKILLS;
 
 /* ══════════════ STORAGE ══════════════ */
 async function loadData(key) {
@@ -486,7 +478,7 @@ export default function Portfolio() {
     (async () => {
       const [storedPr, storedP, storedS] = await Promise.all([loadData("portfolio-profile"), loadData("portfolio-projects-v2"), loadData("portfolio-skills")]);
       if (storedPr) setProfile(prev => ({ ...prev, ...storedPr }));
-      setProjects(storedP || []);
+      setProjects(storedP && storedP.length > 0 ? storedP : DATA_PROJECTS);
       setSkills(storedS?.length > 0 ? storedS : DEFAULT_SKILLS);
       setLoading(false);
     })();
