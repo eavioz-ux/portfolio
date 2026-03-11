@@ -11,23 +11,7 @@ export const PROFILE = {
 };
 
 export const SKILLS = [
-  { id: "s1", name: "Arduino & Embedded C/C++", category: "Programming" },
-  { id: "s2", name: "Arduino IDE", category: "Programming" },
-  { id: "s3", name: "ESP32 / IoT", category: "Programming" },
-  { id: "s4", name: "Sensor Integration", category: "Electronics" },
-  { id: "s5", name: "DC Motors & Servo Control", category: "Electronics" },
-  { id: "s6", name: "Stepper Motors", category: "Electronics" },
-  { id: "s7", name: "Basic Circuit Design", category: "Electronics" },
-  { id: "s8", name: "LED Systems & Addressable Strips", category: "Electronics" },
-  { id: "s9", name: "Wireless Communication (RF, BT)", category: "Communication" },
-  { id: "s10", name: "Cellular & Smartphone Control", category: "Communication" },
-  { id: "s11", name: "Remote Control Systems", category: "Communication" },
-  { id: "s12", name: "IoT Cloud Connectivity", category: "Communication" },
-  { id: "s13", name: "Robot Design & Assembly", category: "Robotics" },
-  { id: "s14", name: "Motion Systems (Linear & Rotary)", category: "Robotics" },
-  { id: "s15", name: "Smart Device Development", category: "Robotics" },
-  { id: "s16", name: "Real-Time Audio & Sound FX", category: "Creative" },
-  { id: "s17", name: "3D Modeling & Printing", category: "Fabrication" },
+  { id: "s1", name: "Python", category: "Programming" },
 ];
 
 export const PROJECTS = [];
