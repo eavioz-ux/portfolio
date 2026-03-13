@@ -458,6 +458,7 @@ export default function Portfolio() {
   const [activeSection, setActiveSection] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
   const clickTimesRef = useRef([]);
+  const scrollLockRef = useRef(false);
 
   // Triple-click "IA" logo to toggle admin mode
   const handleLogoClick = () => {
@@ -486,9 +487,19 @@ export default function Portfolio() {
 
   useEffect(() => { const h = () => setScrolled(window.scrollY > 40); window.addEventListener("scroll", h); return () => window.removeEventListener("scroll", h); }, []);
 
+  // Navigate to section — locks scroll detection during animation
+  const navigateToSection = useCallback((sectionId) => {
+    setActiveSection(sectionId);
+    scrollLockRef.current = true;
+    const el = document.getElementById(sectionId);
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    setTimeout(() => { scrollLockRef.current = false; }, 1000);
+  }, []);
+
   useEffect(() => {
     const sectionIds = ["projects", "skills", "about", "contact"];
     const handleScroll = () => {
+      if (scrollLockRef.current) return;
       const offset = 80; let current = "";
       for (const id of sectionIds) { const el = document.getElementById(id); if (el && el.getBoundingClientRect().top <= offset) current = id; }
       setActiveSection(current);
@@ -546,7 +557,7 @@ export default function Portfolio() {
             if (item === "Skills" && skills.length === 0 && !isAdmin) return false;
             return true;
           }).map(item => (
-            <NavButton key={item} label={item} active={activeSection === item.toLowerCase()} onClick={() => { setActiveSection(item.toLowerCase()); const el = document.getElementById(item.toLowerCase()); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); }} />
+            <NavButton key={item} label={item} active={activeSection === item.toLowerCase()} onClick={() => navigateToSection(item.toLowerCase())} />
           ))}
           {isAdmin && <button onClick={() => setShowSettings(true)} style={{ background: "none", border: "none", color: "#666", cursor: "pointer", padding: 4, display: "flex" }} onMouseEnter={e => e.currentTarget.style.color = "#fff"} onMouseLeave={e => e.currentTarget.style.color = "#666"}><GearIcon /></button>}
         </div>
@@ -563,7 +574,7 @@ export default function Portfolio() {
             if (item === "Skills" && skills.length === 0 && !isAdmin) return false;
             return true;
           }).map(item => (
-          <button key={item} onClick={() => { setMobileMenu(false); setActiveSection(item.toLowerCase()); setTimeout(() => { const el = document.getElementById(item.toLowerCase()); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); }, 100); }}
+          <button key={item} onClick={() => { setMobileMenu(false); setTimeout(() => navigateToSection(item.toLowerCase()), 100); }}
             style={{ background: "none", border: "none", fontSize: 24, fontWeight: 600, color: activeSection === item.toLowerCase() ? "#f5f5f7" : "#888", cursor: "pointer", fontFamily: F, transition: "color 0.2s" }}>{item}</button>
         ))}
         {isAdmin && <button onClick={() => { setMobileMenu(false); setShowSettings(true); }} style={{ background: "none", border: "none", fontSize: 16, color: "#666", cursor: "pointer", fontFamily: F, display: "flex", alignItems: "center", gap: 8 }}><GearIcon /> Settings</button>}
