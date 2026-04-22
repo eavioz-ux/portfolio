@@ -26,7 +26,6 @@ function fileToBase64(file) {
   });
 }
 
-// Compress images to max 800px wide, JPEG quality 0.7 — saves ~80% storage
 function compressImage(file, maxWidth = 800, quality = 0.7) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -157,10 +156,7 @@ function SkillsSection({ skills, onUpdate, isAdmin }) {
   const [editing, setEditing] = useState(false);
   const cats = [...new Set(skills.map(s => s.category))];
   const cc = { Programming: "#3b82f6", Electronics: "#f59e0b", Communication: "#8b5cf6", Robotics: "#10b981", Creative: "#ec4899", Fabrication: "#f97316" };
-
-  // Hide entirely for visitors when no skills
   if (skills.length === 0 && !isAdmin) return null;
-
   return (
     <section id="skills" style={{ scrollMarginTop: 64, maxWidth: 900, margin: "0 auto", padding: "0 24px 80px", position: "relative", zIndex: 1 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 32 }}>
@@ -252,7 +248,7 @@ function ProjectModal({ project, onClose, onEdit, onDelete, isAdmin }) {
   );
 }
 
-/* ══════════════ PROJECT FORM (file uploads) ══════════════ */
+/* ══════════════ PROJECT FORM ══════════════ */
 function ProjectForm({ onSave, onCancel, initial }) {
   const toForm = (p) => p ? { ...p, techStackStr: (p.techStack || []).join(", "), specsStr: Object.entries(p.specs || {}).map(([k, v]) => k + ": " + v).join("\n"), challenges: p.challenges?.length > 0 ? p.challenges : [{ problem: "", solution: "" }], photos: p.media || [], videoData: p.videoUrl || "" } : { title: "", category: "", thumbnail: "", summary: "", description: "", techStackStr: "", github: "", challenges: [{ problem: "", solution: "" }], specsStr: "", photos: [], videoData: "" };
   const [form, setForm] = useState(() => toForm(initial));
@@ -261,46 +257,25 @@ function ProjectForm({ onSave, onCancel, initial }) {
   const setChallenge = (idx, field, val) => setForm(prev => { const ch = [...prev.challenges]; ch[idx] = { ...ch[idx], [field]: val }; return { ...prev, challenges: ch }; });
   const addChallenge = () => setForm(prev => ({ ...prev, challenges: [...prev.challenges, { problem: "", solution: "" }] }));
   const removeChallenge = (idx) => setForm(prev => ({ ...prev, challenges: prev.challenges.filter((_, i) => i !== idx) }));
-
   const handlePhotoUpload = async (e) => {
-    const files = Array.from(e.target.files || []);
-    if (!files.length) return;
+    const files = Array.from(e.target.files || []); if (!files.length) return;
     setUploading(true);
-    try {
-      const newPhotos = await Promise.all(files.map(f => compressImage(f)));
-      setForm(prev => {
-        const updated = [...prev.photos, ...newPhotos];
-        return { ...prev, photos: updated, thumbnail: prev.thumbnail || updated[0] };
-      });
-    } catch (err) { alert("Error uploading photos: " + err.message); }
-    setUploading(false);
-    e.target.value = "";
+    try { const newPhotos = await Promise.all(files.map(f => compressImage(f))); setForm(prev => { const updated = [...prev.photos, ...newPhotos]; return { ...prev, photos: updated, thumbnail: prev.thumbnail || updated[0] }; }); } catch (err) { alert("Error uploading photos: " + err.message); }
+    setUploading(false); e.target.value = "";
   };
-
   const handleVideoUpload = async (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const file = e.target.files?.[0]; if (!file) return;
     if (file.size > 15 * 1024 * 1024) { alert("Video must be under 15MB for direct upload."); return; }
     setUploading(true);
     try { set("videoData", await fileToBase64(file)); } catch (err) { alert("Error: " + err.message); }
-    setUploading(false);
-    e.target.value = "";
+    setUploading(false); e.target.value = "";
   };
-
-  const removePhoto = (idx) => {
-    setForm(prev => {
-      const updated = prev.photos.filter((_, i) => i !== idx);
-      const removedUrl = prev.photos[idx];
-      return { ...prev, photos: updated, thumbnail: prev.thumbnail === removedUrl ? (updated[0] || "") : prev.thumbnail };
-    });
-  };
-
+  const removePhoto = (idx) => { setForm(prev => { const updated = prev.photos.filter((_, i) => i !== idx); const removedUrl = prev.photos[idx]; return { ...prev, photos: updated, thumbnail: prev.thumbnail === removedUrl ? (updated[0] || "") : prev.thumbnail }; }); };
   const handleSubmit = () => {
     if (!form.title.trim()) return;
     const specsObj = {}; form.specsStr.split("\n").forEach(line => { const i = line.indexOf(":"); if (i > 0) specsObj[line.slice(0, i).trim()] = line.slice(i + 1).trim(); });
     onSave({ id: initial?.id || ("proj-" + Date.now()), title: form.title.trim(), category: form.category.trim() || "General", thumbnail: form.thumbnail || form.photos[0] || "", summary: form.summary.trim(), description: form.description.trim(), techStack: form.techStackStr.split(",").map(s => s.trim()).filter(Boolean), challenges: form.challenges.filter(c => c.problem.trim() || c.solution.trim()), specs: specsObj, github: form.github.trim(), videoUrl: form.videoData, media: form.photos });
   };
-
   return (
     <div onClick={onCancel} style={{ position: "fixed", inset: 0, zIndex: 1100, background: "rgba(0,0,0,0.7)", backdropFilter: "blur(16px)", display: "flex", justifyContent: "center", alignItems: "flex-start", overflowY: "auto", padding: "50px 20px" }}>
       <div onClick={e => e.stopPropagation()} style={{ background: "#111113", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 20, maxWidth: 640, width: "100%", padding: "32px 28px 36px", animation: "modalIn 0.35s ease" }}>
@@ -313,49 +288,10 @@ function ProjectForm({ onSave, onCancel, initial }) {
             <div><label style={labelStyle}>Project Title *</label><input style={inputStyle} value={form.title} onChange={e => set("title", e.target.value)} placeholder="e.g. Line-Following Robot" /></div>
             <div><label style={labelStyle}>Category</label><input style={inputStyle} value={form.category} onChange={e => set("category", e.target.value)} placeholder="e.g. Robotics" /></div>
           </div>
-
-          {/* Photo upload */}
-          <div>
-            <label style={labelStyle}>Photos</label>
-            <label style={uploadBtnStyle}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
-              {uploading ? "Uploading..." : "Upload Photos"}
-              <input type="file" accept="image/*" multiple style={{ display: "none" }} onChange={handlePhotoUpload} disabled={uploading} />
-            </label>
-            {form.photos.length > 0 && (
-              <div style={{ marginTop: 12 }}>
-                <p style={{ fontSize: 11, color: "#555", marginBottom: 8 }}>Click to set as cover photo. X to remove.</p>
-                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                  {form.photos.map((url, i) => {
-                    const isCover = form.thumbnail === url;
-                    return (
-                      <div key={i} style={{ position: "relative", width: 80, height: 56, borderRadius: 8, overflow: "hidden", border: isCover ? "2.5px solid #3b82f6" : "2.5px solid rgba(255,255,255,0.08)", opacity: isCover ? 1 : 0.6, cursor: "pointer", transition: "all 0.2s", boxShadow: isCover ? "0 0 12px rgba(59,130,246,0.3)" : "none" }}>
-                        <img src={url} alt="" onClick={() => set("thumbnail", url)} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                        {isCover && <div style={{ position: "absolute", top: 2, left: 2, background: "#3b82f6", borderRadius: 4, padding: "1px 5px", fontSize: 8, color: "#fff", fontWeight: 700 }}>COVER</div>}
-                        <button onClick={(e) => { e.stopPropagation(); removePhoto(i); }} style={{ position: "absolute", top: 2, right: 2, background: "rgba(0,0,0,0.7)", border: "none", borderRadius: "50%", width: 18, height: 18, color: "#fff", fontSize: 11, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>x</button>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
+          <div><label style={labelStyle}>Photos</label><label style={uploadBtnStyle}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>{uploading ? "Uploading..." : "Upload Photos"}<input type="file" accept="image/*" multiple style={{ display: "none" }} onChange={handlePhotoUpload} disabled={uploading} /></label>
+            {form.photos.length > 0 && (<div style={{ marginTop: 12 }}><p style={{ fontSize: 11, color: "#555", marginBottom: 8 }}>Click to set as cover photo. X to remove.</p><div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>{form.photos.map((url, i) => { const isCover = form.thumbnail === url; return (<div key={i} style={{ position: "relative", width: 80, height: 56, borderRadius: 8, overflow: "hidden", border: isCover ? "2.5px solid #3b82f6" : "2.5px solid rgba(255,255,255,0.08)", opacity: isCover ? 1 : 0.6, cursor: "pointer", transition: "all 0.2s", boxShadow: isCover ? "0 0 12px rgba(59,130,246,0.3)" : "none" }}><img src={url} alt="" onClick={() => set("thumbnail", url)} style={{ width: "100%", height: "100%", objectFit: "cover" }} />{isCover && <div style={{ position: "absolute", top: 2, left: 2, background: "#3b82f6", borderRadius: 4, padding: "1px 5px", fontSize: 8, color: "#fff", fontWeight: 700 }}>COVER</div>}<button onClick={(e) => { e.stopPropagation(); removePhoto(i); }} style={{ position: "absolute", top: 2, right: 2, background: "rgba(0,0,0,0.7)", border: "none", borderRadius: "50%", width: 18, height: 18, color: "#fff", fontSize: 11, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>x</button></div>); })}</div></div>)}
           </div>
-
-          {/* Video upload */}
-          <div>
-            <label style={labelStyle}>Video</label>
-            <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
-              <label style={uploadBtnStyle}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
-                {uploading ? "Uploading..." : "Upload Video"}
-                <input type="file" accept="video/*" style={{ display: "none" }} onChange={handleVideoUpload} disabled={uploading} />
-              </label>
-              {form.videoData && <span style={{ fontSize: 11, color: "#30d158" }}>Video attached</span>}
-              {form.videoData && <button onClick={() => set("videoData", "")} style={{ background: "none", border: "none", color: "#ff453a", fontSize: 11, cursor: "pointer", fontWeight: 600 }}>Remove</button>}
-            </div>
-            <p style={{ fontSize: 11, color: "#444", marginTop: 6 }}>Upload directly from your phone or camera. Max 15MB per video.</p>
-          </div>
-
+          <div><label style={labelStyle}>Video</label><div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}><label style={uploadBtnStyle}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>{uploading ? "Uploading..." : "Upload Video"}<input type="file" accept="video/*" style={{ display: "none" }} onChange={handleVideoUpload} disabled={uploading} /></label>{form.videoData && <span style={{ fontSize: 11, color: "#30d158" }}>Video attached</span>}{form.videoData && <button onClick={() => set("videoData", "")} style={{ background: "none", border: "none", color: "#ff453a", fontSize: 11, cursor: "pointer", fontWeight: 600 }}>Remove</button>}</div><p style={{ fontSize: 11, color: "#444", marginTop: 6 }}>Upload directly from your phone or camera. Max 15MB per video.</p></div>
           <div><label style={labelStyle}>Short Summary</label><textarea style={{ ...inputStyle, minHeight: 56, resize: "vertical" }} value={form.summary} onChange={e => set("summary", e.target.value)} placeholder="One-liner..." /></div>
           <div><label style={labelStyle}>Full Description</label><textarea style={{ ...inputStyle, minHeight: 90, resize: "vertical" }} value={form.description} onChange={e => set("description", e.target.value)} placeholder="What you built, how, what you learned..." /></div>
           <div><label style={labelStyle}>Tech Stack (comma-separated)</label><input style={inputStyle} value={form.techStackStr} onChange={e => set("techStackStr", e.target.value)} placeholder="Arduino, Servo, IR Sensor" /></div>
@@ -460,20 +396,13 @@ export default function Portfolio() {
   const clickTimesRef = useRef([]);
   const scrollLockRef = useRef(false);
 
-  // Triple-click "IA" logo to toggle admin mode
   const handleLogoClick = () => {
     const now = Date.now();
     clickTimesRef.current = [...clickTimesRef.current.filter(t => now - t < 800), now];
-    if (clickTimesRef.current.length >= 3) {
-      setIsAdmin(prev => !prev);
-      clickTimesRef.current = [];
-    }
+    if (clickTimesRef.current.length >= 3) { setIsAdmin(prev => !prev); clickTimesRef.current = []; }
   };
 
-  // Also support ?admin URL param
-  useEffect(() => {
-    if (window.location.search.includes("admin")) setIsAdmin(true);
-  }, []);
+  useEffect(() => { if (window.location.search.includes("admin")) setIsAdmin(true); }, []);
 
   useEffect(() => {
     (async () => {
@@ -487,7 +416,6 @@ export default function Portfolio() {
 
   useEffect(() => { const h = () => setScrolled(window.scrollY > 40); window.addEventListener("scroll", h); return () => window.removeEventListener("scroll", h); }, []);
 
-  // Navigate to section — locks scroll detection during animation
   const navigateToSection = useCallback((sectionId) => {
     setActiveSection(sectionId);
     scrollLockRef.current = true;
@@ -546,17 +474,12 @@ export default function Portfolio() {
       "}</style>
       <GridBG />
 
-      {/* Admin indicator */}
       {isAdmin && <div style={{ position: "fixed", bottom: 16, right: 16, zIndex: 200, background: "rgba(59,130,246,0.15)", border: "1px solid rgba(59,130,246,0.3)", borderRadius: 10, padding: "6px 14px", fontSize: 11, color: "#3b82f6", fontWeight: 600, backdropFilter: "blur(8px)" }}>Admin Mode</div>}
 
-      {/* Nav */}
       <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 100, background: scrolled ? "rgba(10,10,10,0.8)" : "transparent", backdropFilter: scrolled ? "blur(24px) saturate(180%)" : "none", borderBottom: scrolled ? "1px solid rgba(255,255,255,0.06)" : "none", transition: "all 0.3s ease", padding: "0 32px", height: 52, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <span onClick={handleLogoClick} style={{ fontSize: 15, fontWeight: 600, color: "#f5f5f7", letterSpacing: -0.3, cursor: "pointer", userSelect: "none" }}>{initials}</span>
         <div className="nav-links" style={{ display: "flex", gap: 24, alignItems: "center" }}>
-          {["Projects", "Skills", "About", "Contact"].filter(item => {
-            if (item === "Skills" && skills.length === 0 && !isAdmin) return false;
-            return true;
-          }).map(item => (
+          {["Projects", "Skills", "About", "Contact"].filter(item => { if (item === "Skills" && skills.length === 0 && !isAdmin) return false; return true; }).map(item => (
             <NavButton key={item} label={item} active={activeSection === item.toLowerCase()} onClick={() => navigateToSection(item.toLowerCase())} />
           ))}
           {isAdmin && <button onClick={() => setShowSettings(true)} style={{ background: "none", border: "none", color: "#666", cursor: "pointer", padding: 4, display: "flex" }} onMouseEnter={e => e.currentTarget.style.color = "#fff"} onMouseLeave={e => e.currentTarget.style.color = "#666"}><GearIcon /></button>}
@@ -568,19 +491,14 @@ export default function Portfolio() {
         </button>
       </nav>
 
-      {/* Mobile menu overlay */}
       {mobileMenu && <div className="mobile-menu" style={{ position: "fixed", top: 52, left: 0, right: 0, bottom: 0, zIndex: 99, background: "rgba(10,10,10,0.95)", backdropFilter: "blur(24px)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 32 }}>
-        {["Projects", "Skills", "About", "Contact"].filter(item => {
-            if (item === "Skills" && skills.length === 0 && !isAdmin) return false;
-            return true;
-          }).map(item => (
+        {["Projects", "Skills", "About", "Contact"].filter(item => { if (item === "Skills" && skills.length === 0 && !isAdmin) return false; return true; }).map(item => (
           <button key={item} onClick={() => { setMobileMenu(false); setTimeout(() => navigateToSection(item.toLowerCase()), 100); }}
             style={{ background: "none", border: "none", fontSize: 24, fontWeight: 600, color: activeSection === item.toLowerCase() ? "#f5f5f7" : "#888", cursor: "pointer", fontFamily: F, transition: "color 0.2s" }}>{item}</button>
         ))}
         {isAdmin && <button onClick={() => { setMobileMenu(false); setShowSettings(true); }} style={{ background: "none", border: "none", fontSize: 16, color: "#666", cursor: "pointer", fontFamily: F, display: "flex", alignItems: "center", gap: 8 }}><GearIcon /> Settings</button>}
       </div>}
 
-      {/* Hero */}
       <section style={{ position: "relative", paddingTop: 140, paddingBottom: 60, textAlign: "center", maxWidth: 820, margin: "0 auto", padding: "140px 24px 60px" }}>
         <GlowOrb top="-200px" left="-150px" color="#3b82f6" size={600} />
         <GlowOrb top="-100px" left="60%" color="#8b5cf6" size={500} />
@@ -603,12 +521,11 @@ export default function Portfolio() {
         </div>
       </section>
 
-      {/* Stats — hidden until you have content */}
-      {(projects.length > 0 || skills.length > 0) && <section style={{ maxWidth: 680, margin: "0 auto 72px", display: "flex", justifyContent: "center", gap: 56, padding: "0 24px", flexWrap: "wrap" }}>
-        {[{ num: projects.length, label: "Projects Built" }, { num: skills.length, label: "Skills" }, { num: projects.length > 0 ? new Set(projects.map(p => p.category)).size : 0, label: "Domains" }].map(s => s.num > 0 && <div key={s.label} style={{ textAlign: "center" }}><div style={{ fontSize: 40, fontWeight: 700, letterSpacing: "-0.02em" }}>{s.num}</div><div style={{ fontSize: 13, color: "#555", marginTop: 4, fontWeight: 500 }}>{s.label}</div></div>)}
+      {/* Stats — only shows when you have projects, no skills counter */}
+      {projects.length > 0 && <section style={{ maxWidth: 680, margin: "0 auto 72px", display: "flex", justifyContent: "center", gap: 56, padding: "0 24px", flexWrap: "wrap" }}>
+        {[{ num: projects.length, label: "Projects Built" }, { num: new Set(projects.map(p => p.category)).size, label: "Domains" }].map(s => s.num > 0 && <div key={s.label} style={{ textAlign: "center" }}><div style={{ fontSize: 40, fontWeight: 700, letterSpacing: "-0.02em" }}>{s.num}</div><div style={{ fontSize: 13, color: "#555", marginTop: 4, fontWeight: 500 }}>{s.label}</div></div>)}
       </section>}
 
-      {/* Projects */}
       <section id="projects" style={{ scrollMarginTop: 64, maxWidth: 1080, margin: "0 auto", padding: "0 24px 80px", position: "relative", zIndex: 1 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20, flexWrap: "wrap", gap: 12 }}>
           {projects.length > 0 && categories.length > 2 && <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>{categories.map(c => <button key={c} onClick={() => setFilter(c)} style={pillBtn(filter === c)}>{c}</button>)}</div>}
@@ -619,18 +536,12 @@ export default function Portfolio() {
           )}
         </div>
         {projects.length === 0 ? <EmptyState onAdd={() => setShowForm(true)} isAdmin={isAdmin} /> : reordering ? (
-          /* Reorder mode — list view with arrows */
           <div style={{ display: "grid", gap: 8, maxWidth: 600, margin: "0 auto" }}>
             {projects.map((p, i) => (
               <div key={p.id} style={{ display: "flex", alignItems: "center", gap: 12, background: "#1c1c1e", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 12, padding: "10px 16px" }}>
                 <span style={{ fontSize: 14, fontWeight: 700, color: "#555", width: 24, textAlign: "center", flexShrink: 0 }}>{i + 1}</span>
-                <div style={{ width: 48, height: 34, borderRadius: 6, overflow: "hidden", flexShrink: 0, background: "#111" }}>
-                  {p.thumbnail ? <img src={p.thumbnail} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <div style={{ width: "100%", height: "100%", background: "#1a1a2e" }} />}
-                </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 14, fontWeight: 600, color: "#eee", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{p.title}</div>
-                  <div style={{ fontSize: 11, color: "#666" }}>{p.category}</div>
-                </div>
+                <div style={{ width: 48, height: 34, borderRadius: 6, overflow: "hidden", flexShrink: 0, background: "#111" }}>{p.thumbnail ? <img src={p.thumbnail} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <div style={{ width: "100%", height: "100%", background: "#1a1a2e" }} />}</div>
+                <div style={{ flex: 1, minWidth: 0 }}><div style={{ fontSize: 14, fontWeight: 600, color: "#eee", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{p.title}</div><div style={{ fontSize: 11, color: "#666" }}>{p.category}</div></div>
                 <div style={{ display: "flex", gap: 4, flexShrink: 0 }}>
                   <button onClick={() => moveProject(i, -1)} disabled={i === 0} style={{ width: 30, height: 30, borderRadius: 6, background: i === 0 ? "rgba(255,255,255,0.02)" : "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)", color: i === 0 ? "#333" : "#aaa", fontSize: 14, cursor: i === 0 ? "default" : "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>&#8593;</button>
                   <button onClick={() => moveProject(i, 1)} disabled={i === projects.length - 1} style={{ width: 30, height: 30, borderRadius: 6, background: i === projects.length - 1 ? "rgba(255,255,255,0.02)" : "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)", color: i === projects.length - 1 ? "#333" : "#aaa", fontSize: 14, cursor: i === projects.length - 1 ? "default" : "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>&#8595;</button>
@@ -647,7 +558,6 @@ export default function Portfolio() {
 
       <SkillsSection skills={skills} onUpdate={persistSkills} isAdmin={isAdmin} />
 
-      {/* About */}
       <section id="about" style={{ scrollMarginTop: 64, borderTop: "1px solid rgba(255,255,255,0.05)", padding: "80px 24px", textAlign: "center", position: "relative", zIndex: 1 }}>
         <div style={{ maxWidth: 580, margin: "0 auto" }}>
           <h2 style={{ fontSize: 30, fontWeight: 700, letterSpacing: "-0.02em" }}>About Me</h2>
@@ -655,7 +565,6 @@ export default function Portfolio() {
         </div>
       </section>
 
-      {/* Contact */}
       <section id="contact" style={{ scrollMarginTop: 64, borderTop: "1px solid rgba(255,255,255,0.05)", padding: "56px 24px", textAlign: "center", position: "relative", zIndex: 1 }}>
         <h2 style={{ fontSize: 24, fontWeight: 700, letterSpacing: "-0.02em" }}>Let's Connect</h2>
         <p style={{ color: "#555", fontSize: 14, marginTop: 10 }}>Open to collaborations, internships, and interesting projects.</p>
@@ -667,7 +576,6 @@ export default function Portfolio() {
         <p style={{ color: "#333", fontSize: 12, marginTop: 48 }}>2026 {profile.firstName} {profile.lastName}. Built with passion.</p>
       </section>
 
-      {/* Modals */}
       {selected && !editTarget && !deleteTarget && <ProjectModal project={selected} onClose={() => setSelected(null)} onEdit={() => setEditTarget(selected)} onDelete={() => setDeleteTarget(selected)} isAdmin={isAdmin} />}
       {(showForm || editTarget) && <ProjectForm initial={editTarget || null} onSave={editTarget ? handleEdit : handleAdd} onCancel={() => { setShowForm(false); setEditTarget(null); }} />}
       {deleteTarget && <DeleteConfirm project={deleteTarget} onConfirm={handleDelete} onCancel={() => setDeleteTarget(null)} />}
