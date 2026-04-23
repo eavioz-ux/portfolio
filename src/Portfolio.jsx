@@ -53,7 +53,7 @@ function isYouTubeOrVimeo(url) { return url && (/youtube\.com|youtu\.be|vimeo\.c
 
 function toEmbedUrl(url) {
   if (!url) return "";
-  const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/v\/)([a-zA-Z0-9_-]{11})/);
+  const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/v\/|youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/);
   if (ytMatch) return "https://www.youtube.com/embed/" + ytMatch[1];
   const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
   if (vimeoMatch) return "https://player.vimeo.com/video/" + vimeoMatch[1];
@@ -193,7 +193,8 @@ function ChallengeCard({ c, i }) {
 function MediaGallery({ media, videoUrl }) {
   const [idx, setIdx] = useState(0);
   const items = [];
-  if (videoUrl) items.push({ type: "video", url: videoUrl });
+  const videos = Array.isArray(videoUrl) ? videoUrl : (videoUrl ? [videoUrl] : []);
+  videos.forEach(v => items.push({ type: "video", url: v }));
   (media || []).forEach(u => items.push({ type: "image", url: u }));
   if (!items.length) return null;
   const a = items[idx] || items[0];
