@@ -37,7 +37,10 @@ export const PROJECTS = [
     title: "4WD Smart Car \u2014 Arduino Autonomous Vehicle",
     category: "Robotics",
     thumbnail: "/projects/smart-car-cover.jpg.png",
-    videoUrl: "https://youtube.com/shorts/o8OCKY2Ujgg",
+    videoUrl: [
+      "https://youtube.com/shorts/o8OCKY2Ujgg",
+      "https://youtube.com/shorts/cm4n-C2ftyQ",
+    ],
     media: [
       "/projects/smart-car-complete.jpg",
       "/projects/smart-car-assembly.jpg",
