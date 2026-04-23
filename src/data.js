@@ -31,4 +31,38 @@ export const SKILLS = [
   { id: "s18", name: "3D Modeling & Printing", category: "Fabrication" },
 ];
 
-export const PROJECTS = [];
+export const PROJECTS = [
+  {
+    id: "proj-1",
+    title: "4WD Smart Car \u2014 Arduino Autonomous Vehicle",
+    category: "Robotics",
+    thumbnail: "/projects/smart-car-complete.jpg",
+    videoUrl: "",
+    media: [
+      "/projects/smart-car-assembly.jpg",
+      "/projects/smart-car-wiring.jpg",
+      "/projects/smart-car-complete.jpg",
+      "/projects/arduino-first-program.jpg",
+      "/projects/arduino-sensor-test.jpg",
+      "/projects/robotics-workshop.jpg",
+    ],
+    summary: "Built a 4-wheel-drive smart car from scratch using Arduino UNO, H-bridge motor driver, and mecanum wheels \u2014 capable of omnidirectional movement and obstacle avoidance.",
+    description: "Designed and assembled a fully functional 4WD smart car as part of an Arduino robotics course. The build started from bare components: a blue acrylic dual-layer chassis, four yellow DC gear motors with mecanum wheels for omnidirectional movement, and an L298N H-bridge motor driver for independent speed and direction control of each motor. The Arduino UNO serves as the brain, running custom C++ firmware written in the Arduino IDE. The project progressed through multiple phases \u2014 from basic LED blinking and sensor interfacing to full motor control logic, wiring the H-bridge, and integrating the complete drive system. Each motor is independently controllable via PWM signals, enabling forward, reverse, lateral, and rotational movement patterns.",
+    techStack: ["Arduino UNO", "C++", "L298N H-Bridge", "DC Gear Motors", "Mecanum Wheels", "Arduino IDE"],
+    challenges: [
+      { problem: "Wiring four motors to the H-bridge with correct polarity for each wheel", solution: "Systematically tested each motor individually, labeled all wires, and used a color-coded wiring scheme to prevent polarity errors during assembly." },
+      { problem: "Motors spinning at different speeds causing the car to drift instead of driving straight", solution: "Implemented PWM-based speed calibration in firmware, adjusting each motor's duty cycle individually until straight-line tracking was achieved." },
+      { problem: "Understanding the H-bridge logic for controlling motor direction", solution: "Built a truth table mapping each IN1/IN2 pin combination to motor behavior (forward, reverse, brake, coast) and used it as a reference during coding." },
+    ],
+    specs: {
+      "Microcontroller": "Arduino UNO (ATmega328P)",
+      "Motor Driver": "L298N Dual H-Bridge",
+      "Motors": "4x DC Gear Motors (Yellow)",
+      "Wheels": "Mecanum Wheels (omnidirectional)",
+      "Chassis": "Blue Acrylic Dual-Layer",
+      "Power": "Battery Pack",
+      "Programming": "Arduino IDE / C++",
+    },
+    github: "",
+  },
+];
