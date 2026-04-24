@@ -403,7 +403,7 @@ export default function Portfolio() {
     if (clickTimesRef.current.length >= 3) { setIsAdmin(prev => !prev); clickTimesRef.current = []; }
   };
 
-  useEffect(() => { if (window.location.search.includes("admin")) setIsAdmin(true); }, []);
+  // Admin mode only via triple-click on "IA" logo
 
   useEffect(() => {
     (async () => {
