@@ -128,7 +128,7 @@ function ProfileSettings({ profile, onSave, onClose }) {
 /* ══════════════ SKILLS ══════════════ */
 function SkillBadge({ skill, onRemove }) {
   const [h, setH] = useState(false);
-  const cc = { Programming: "#3b82f6", Electronics: "#f59e0b", Communication: "#8b5cf6", Robotics: "#10b981", Creative: "#ec4899", Fabrication: "#f97316" };
+  const cc = { Programming: "#1e4080", Electronics: "#f59e0b", Communication: "#8b5cf6", Robotics: "#10b981", Creative: "#ec4899", Fabrication: "#f97316" };
   const c = cc[skill.category] || "#666";
   return <span onMouseEnter={() => setH(true)} onMouseLeave={() => setH(false)} style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "6px 14px", borderRadius: 20, background: c + "12", border: "1px solid " + c + "30", color: c, fontSize: 13, fontWeight: 500, cursor: onRemove ? "pointer" : "default" }}>{skill.name}{onRemove && h && <span onClick={e => { e.stopPropagation(); onRemove(); }} style={{ marginLeft: 2, fontSize: 14, opacity: 0.7 }}>x</span>}</span>;
 }
@@ -151,7 +151,7 @@ function AddSkillInline({ onAdd, onCancel }) {
 function SkillsSection({ skills, onUpdate, isAdmin }) {
   const [editing, setEditing] = useState(false);
   const cats = [...new Set(skills.map(s => s.category))];
-  const cc = { Programming: "#3b82f6", Electronics: "#f59e0b", Communication: "#8b5cf6", Robotics: "#10b981", Creative: "#ec4899", Fabrication: "#f97316" };
+  const cc = { Programming: "#1e4080", Electronics: "#f59e0b", Communication: "#8b5cf6", Robotics: "#10b981", Creative: "#ec4899", Fabrication: "#f97316" };
   if (skills.length === 0 && !isAdmin) return null;
   return (
     <section id="skills" style={{ scrollMarginTop: 64, maxWidth: 900, margin: "0 auto", padding: "0 24px 80px", position: "relative", zIndex: 1 }}>
@@ -286,7 +286,7 @@ function ProjectForm({ onSave, onCancel, initial }) {
             <div><label style={labelStyle}>Category</label><input style={inputStyle} value={form.category} onChange={e => set("category", e.target.value)} placeholder="e.g. Robotics" /></div>
           </div>
           <div><label style={labelStyle}>Photos</label><label style={uploadBtnStyle}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>{uploading ? "Uploading..." : "Upload Photos"}<input type="file" accept="image/*" multiple style={{ display: "none" }} onChange={handlePhotoUpload} disabled={uploading} /></label>
-            {form.photos.length > 0 && (<div style={{ marginTop: 12 }}><p style={{ fontSize: 11, color: "#555", marginBottom: 8 }}>Click to set as cover photo. X to remove.</p><div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>{form.photos.map((url, i) => { const isCover = form.thumbnail === url; return (<div key={i} style={{ position: "relative", width: 80, height: 56, borderRadius: 8, overflow: "hidden", border: isCover ? "2.5px solid #3b82f6" : "2.5px solid rgba(255,255,255,0.08)", opacity: isCover ? 1 : 0.6, cursor: "pointer", transition: "all 0.2s", boxShadow: isCover ? "0 0 12px rgba(59,130,246,0.3)" : "none" }}><img src={url} alt="" onClick={() => set("thumbnail", url)} style={{ width: "100%", height: "100%", objectFit: "cover" }} />{isCover && <div style={{ position: "absolute", top: 2, left: 2, background: "#3b82f6", borderRadius: 4, padding: "1px 5px", fontSize: 8, color: "#fff", fontWeight: 700 }}>COVER</div>}<button onClick={(e) => { e.stopPropagation(); removePhoto(i); }} style={{ position: "absolute", top: 2, right: 2, background: "rgba(0,0,0,0.7)", border: "none", borderRadius: "50%", width: 18, height: 18, color: "#fff", fontSize: 11, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>x</button></div>); })}</div></div>)}
+            {form.photos.length > 0 && (<div style={{ marginTop: 12 }}><p style={{ fontSize: 11, color: "#555", marginBottom: 8 }}>Click to set as cover photo. X to remove.</p><div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>{form.photos.map((url, i) => { const isCover = form.thumbnail === url; return (<div key={i} style={{ position: "relative", width: 80, height: 56, borderRadius: 8, overflow: "hidden", border: isCover ? "2.5px solid #1e4080" : "2.5px solid rgba(255,255,255,0.08)", opacity: isCover ? 1 : 0.6, cursor: "pointer", transition: "all 0.2s", boxShadow: isCover ? "0 0 10px rgba(30,64,128,0.25)" : "none" }}><img src={url} alt="" onClick={() => set("thumbnail", url)} style={{ width: "100%", height: "100%", objectFit: "cover" }} />{isCover && <div style={{ position: "absolute", top: 2, left: 2, background: "#1e4080", borderRadius: 4, padding: "1px 5px", fontSize: 8, color: "#fff", fontWeight: 700 }}>COVER</div>}<button onClick={(e) => { e.stopPropagation(); removePhoto(i); }} style={{ position: "absolute", top: 2, right: 2, background: "rgba(0,0,0,0.7)", border: "none", borderRadius: "50%", width: 18, height: 18, color: "#fff", fontSize: 11, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>x</button></div>); })}</div></div>)}
           </div>
           <div><label style={labelStyle}>Video</label><div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}><label style={uploadBtnStyle}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>{uploading ? "Uploading..." : "Upload Video"}<input type="file" accept="video/*" style={{ display: "none" }} onChange={handleVideoUpload} disabled={uploading} /></label>{form.videoData && <span style={{ fontSize: 11, color: "#30d158" }}>Video attached</span>}{form.videoData && <button onClick={() => set("videoData", "")} style={{ background: "none", border: "none", color: "#ff453a", fontSize: 11, cursor: "pointer", fontWeight: 600 }}>Remove</button>}</div><p style={{ fontSize: 11, color: "#444", marginTop: 6 }}>Upload directly from your phone or camera. Max 15MB per video.</p></div>
           <div><label style={labelStyle}>Short Summary</label><textarea style={{ ...inputStyle, minHeight: 56, resize: "vertical" }} value={form.summary} onChange={e => set("summary", e.target.value)} placeholder="One-liner..." /></div>
@@ -360,7 +360,7 @@ function EmptyState({ onAdd, isAdmin }) {
 /* ══════════════ NAV & SOCIAL ══════════════ */
 function NavButton({ label, active, onClick }) {
   const [hovered, setHovered] = useState(false);
-  return <button onClick={onClick} onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} style={{ background: "none", border: "none", fontSize: 13, fontWeight: active ? 600 : 500, color: (active || hovered) ? "#f5f5f7" : "#888", cursor: "pointer", fontFamily: F, padding: "0 0 2px 0", borderBottom: active ? "1.5px solid rgba(255,255,255,0.5)" : "1.5px solid transparent", transition: "all 0.25s ease" }}>{label}</button>;
+  return <button onClick={onClick} onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} style={{ background: "none", border: "none", fontSize: 13, fontWeight: active ? 600 : 500, color: (active || hovered) ? "#f5f5f7" : "#888", cursor: "pointer", fontFamily: F, padding: "0 0 2px 0", borderBottom: active ? "1.5px solid #1e4080" : "1.5px solid transparent", transition: "all 0.25s ease" }}>{label}</button>;
 }
 
 function SocialLink({ href, label, children }) {
@@ -501,10 +501,10 @@ export default function Portfolio() {
         
         
         <div style={{ position: "relative", zIndex: 1 }}>
-          <p style={{ fontSize: 14, fontWeight: 500, color: "#4a4a4a", letterSpacing: 4, textTransform: "uppercase", animation: "fadeUp 0.6s ease", marginBottom: 20 }}>{profile.tagline}</p>
+          <p style={{ fontSize: 14, fontWeight: 500, color: "#1e4080", letterSpacing: 4, textTransform: "uppercase", animation: "fadeUp 0.6s ease", marginBottom: 20 }}>{profile.tagline}</p>
           <h1 style={{ fontSize: "clamp(52px, 9vw, 88px)", fontWeight: 700, lineHeight: 0.95, letterSpacing: "-0.03em", animation: "fadeUp 0.6s ease 0.1s", animationFillMode: "both" }}>{profile.firstName}</h1>
           <h1 style={{ fontSize: "clamp(52px, 9vw, 88px)", fontWeight: 700, lineHeight: 0.95, letterSpacing: "-0.03em", animation: "fadeUp 0.6s ease 0.15s", animationFillMode: "both", marginTop: 4 }}>{profile.lastName}</h1>
-          <div style={{ width: 60, height: 2, background: "rgba(255,255,255,0.15)", margin: "28px auto 0", borderRadius: 1, animation: "lineDraw 0.8s ease 0.4s both" }} />
+          <div style={{ width: 60, height: 2, background: "#1a3a6b", margin: "28px auto 0", borderRadius: 1, animation: "lineDraw 0.8s ease 0.4s both" }} />
           <p style={{ fontSize: 17, color: "#777", marginTop: 24, lineHeight: 1.7, maxWidth: 520, margin: "24px auto 0", animation: "fadeUp 0.6s ease 0.25s", animationFillMode: "both" }}>{profile.bio}</p>
           <div style={{ display: "flex", justifyContent: "center", gap: 12, marginTop: 36, flexWrap: "wrap", animation: "fadeUp 0.6s ease 0.35s", animationFillMode: "both" }}>
             <SocialLink href={profile.linkedin} label="LinkedIn">{LinkedInIcon()}</SocialLink>
@@ -528,7 +528,7 @@ export default function Portfolio() {
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20, flexWrap: "wrap", gap: 12 }}>
           {projects.length > 0 && categories.length > 2 && <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>{categories.map(c => <button key={c} onClick={() => setFilter(c)} style={pillBtn(filter === c)}>{c}</button>)}</div>}
           {isAdmin && projects.length > 1 && (
-            <button onClick={() => setReordering(!reordering)} style={{ padding: "7px 18px", borderRadius: 20, background: reordering ? "rgba(59,130,246,0.15)" : "rgba(255,255,255,0.04)", border: reordering ? "1px solid rgba(59,130,246,0.3)" : "1px solid rgba(255,255,255,0.1)", color: reordering ? "#3b82f6" : "#888", fontSize: 13, fontWeight: 500, cursor: "pointer", fontFamily: F, transition: "all 0.2s" }}>
+            <button onClick={() => setReordering(!reordering)} style={{ padding: "7px 18px", borderRadius: 20, background: reordering ? "rgba(26,58,107,0.2)" : "rgba(255,255,255,0.04)", border: reordering ? "1px solid rgba(30,64,128,0.5)" : "1px solid rgba(255,255,255,0.1)", color: reordering ? "#1e4080" : "#888", fontSize: 13, fontWeight: 500, cursor: "pointer", fontFamily: F, transition: "all 0.2s" }}>
               {reordering ? "Done Reordering" : "Reorder"}
             </button>
           )}
