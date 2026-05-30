@@ -480,7 +480,7 @@ export default function Portfolio() {
           {["Projects", "Skills", "About", "Contact"].filter(item => { if (item === "Skills" && skills.length === 0 && !isAdmin) return false; return true; }).map(item => (
             <NavButton key={item} label={item} active={activeSection === item.toLowerCase()} onClick={() => navigateToSection(item.toLowerCase())} />
           ))}
-          {isAdmin && <button onClick={() => setShowSettings(true)} style={{ background: "none", border: "none", color: "#666", cursor: "pointer", padding: 4, display: "flex" }} onMouseEnter={e => e.currentTarget.style.color = "#fff"} onMouseLeave={e => e.currentTarget.style.color = "#666"}><GearIcon /></button>}
+          {isAdmin && <span style={{ color: "#444", padding: 4, display: "flex" }}><GearIcon /></span>}
         </div>
         <button className="nav-burger" onClick={() => setMobileMenu(!mobileMenu)} style={{ display: "none", background: "none", border: "none", color: "#f5f5f7", cursor: "pointer", padding: 4, flexDirection: "column", gap: 4 }}>
           <span style={{ width: 20, height: 2, background: "#f5f5f7", borderRadius: 1, transition: "all 0.2s", transform: mobileMenu ? "rotate(45deg) translateY(6px)" : "none" }} />
@@ -494,7 +494,7 @@ export default function Portfolio() {
           <button key={item} onClick={() => { setMobileMenu(false); setTimeout(() => navigateToSection(item.toLowerCase()), 100); }}
             style={{ background: "none", border: "none", fontSize: 24, fontWeight: 600, color: activeSection === item.toLowerCase() ? "#f5f5f7" : "#888", cursor: "pointer", fontFamily: F, transition: "color 0.2s" }}>{item}</button>
         ))}
-        {isAdmin && <button onClick={() => { setMobileMenu(false); setShowSettings(true); }} style={{ background: "none", border: "none", fontSize: 16, color: "#666", cursor: "pointer", fontFamily: F, display: "flex", alignItems: "center", gap: 8 }}><GearIcon /> Settings</button>}
+        {isAdmin && <span style={{ fontSize: 16, color: "#444", fontFamily: F, display: "flex", alignItems: "center", gap: 8 }}><GearIcon /> Settings</span>}
       </div>}
 
       <section style={{ position: "relative", paddingTop: 140, paddingBottom: 60, textAlign: "center", maxWidth: 820, margin: "0 auto", padding: "140px 24px 60px" }}>
@@ -577,7 +577,7 @@ export default function Portfolio() {
       {selected && !editTarget && !deleteTarget && <ProjectModal project={selected} onClose={() => setSelected(null)} onEdit={() => setEditTarget(selected)} onDelete={() => setDeleteTarget(selected)} isAdmin={isAdmin} />}
       {(showForm || editTarget) && <ProjectForm initial={editTarget || null} onSave={editTarget ? handleEdit : handleAdd} onCancel={() => { setShowForm(false); setEditTarget(null); }} />}
       {deleteTarget && <DeleteConfirm project={deleteTarget} onConfirm={handleDelete} onCancel={() => setDeleteTarget(null)} />}
-      {showSettings && <ProfileSettings profile={profile} onSave={persistProfile} onClose={() => setShowSettings(false)} />}
+      /* settings modal disabled */
     </div>
   );
 }
