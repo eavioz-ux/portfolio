@@ -389,17 +389,9 @@ export default function Portfolio() {
   const [showSettings, setShowSettings] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("");
-  const [isAdmin, setIsAdmin] = useState(false);
-  const clickTimesRef = useRef([]);
+  const isAdmin = false;
   const scrollLockRef = useRef(false);
 
-  const handleLogoClick = () => {
-    const now = Date.now();
-    clickTimesRef.current = [...clickTimesRef.current.filter(t => now - t < 800), now];
-    if (clickTimesRef.current.length >= 3) { setIsAdmin(prev => !prev); clickTimesRef.current = []; }
-  };
-
-  // Admin mode only via triple-click on "IA" logo
 
   useEffect(() => {
     (async () => {
@@ -475,7 +467,7 @@ export default function Portfolio() {
       {isAdmin && <div style={{ position: "fixed", bottom: 16, right: 16, zIndex: 200, background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 10, padding: "6px 14px", fontSize: 11, color: "#888", fontWeight: 600, backdropFilter: "blur(8px)" }}>Admin Mode</div>}
 
       <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 100, background: scrolled ? "rgba(10,10,10,0.8)" : "transparent", backdropFilter: scrolled ? "blur(24px) saturate(180%)" : "none", borderBottom: scrolled ? "1px solid rgba(255,255,255,0.06)" : "none", transition: "all 0.3s ease", padding: "0 32px", height: 52, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <span onClick={handleLogoClick} style={{ fontSize: 15, fontWeight: 600, color: "#f5f5f7", letterSpacing: -0.3, cursor: "pointer", userSelect: "none" }}>{initials}</span>
+        <span style={{ fontSize: 15, fontWeight: 600, color: "#f5f5f7", letterSpacing: -0.3 }}>{initials}</span>
         <div className="nav-links" style={{ display: "flex", gap: 24, alignItems: "center" }}>
           {["Projects", "Skills", "About", "Contact"].filter(item => { if (item === "Skills" && skills.length === 0 && !isAdmin) return false; return true; }).map(item => (
             <NavButton key={item} label={item} active={activeSection === item.toLowerCase()} onClick={() => navigateToSection(item.toLowerCase())} />
