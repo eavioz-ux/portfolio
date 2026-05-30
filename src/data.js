@@ -29,6 +29,7 @@ export const SKILLS = [
   { id: "s16", name: "Smart Device Development", category: "Robotics" },
   { id: "s17", name: "Real-Time Audio & Sound FX", category: "Creative" },
   { id: "s18", name: "3D Modeling & Printing", category: "Fabrication" },
+  { id: "s19", name: "PCB Soldering", category: "Electronics" },
 ];
 
 export const PROJECTS = [
@@ -97,6 +98,38 @@ export const PROJECTS = [
       "Auto Threshold": "30cm detection range",
       "Power": "18650 Rechargeable Li-ion Battery",
       "Libraries": "NewPing, Servo, TM1637Display, RCSwitch",
+    },
+    github: "",
+  },
+  {
+    id: "proj-3",
+    title: "Simon Game \u2014 Soldered PCB Memory Game",
+    category: "Electronics",
+    thumbnail: "/projects/simon-cover.png",
+    videoUrl: "/projects/simon-demo.mp4",
+    media: [
+      "/projects/simon-board.jpg",
+      "/projects/simon-soldering.jpg",
+      "/projects/simon-workshop.jpg",
+    ],
+    summary: "Designed, soldered, and programmed a fully functional Simon memory game on a custom PCB shield \u2014 the first project involving hands-on PCB soldering and component assembly from scratch.",
+    description: "Built a working Simon memory game by physically soldering all components onto a custom Wokwi-branded PCB shield designed to mount directly onto an Arduino UNO. This was the first project in the course to involve PCB soldering \u2014 every LED, push button, resistor, and buzzer was manually soldered onto the board by hand using a soldering iron and solder wire. The finished shield plugs directly onto the Arduino UNO's pin headers, creating a self-contained game unit with no loose wires. The game logic runs as Arduino C++ firmware: the Arduino generates a random sequence of coloured LED flashes accompanied by distinct buzzer tones for each colour. The player must reproduce the sequence by pressing the corresponding coloured buttons. With each successful round the sequence grows by one step, increasing difficulty. A wrong button press triggers a failure tone and resets the game. The firmware uses non-blocking timing with millis() rather than delay() for responsive button reading, and implements software debouncing to eliminate false button triggers.",
+    techStack: ["Arduino UNO", "C++", "PCB Soldering", "LEDs", "Push Buttons", "Passive Buzzer", "Resistors", "Wokwi PCB Shield", "Arduino IDE"],
+    challenges: [
+      { problem: "First time soldering components onto a PCB \u2014 risk of cold joints, bridging, or damaging components with excess heat", solution: "Worked methodically component by component, starting with resistors (most heat-tolerant) before moving to LEDs and buttons, cleaning the iron tip between each joint and inspecting each solder point before proceeding." },
+      { problem: "Button inputs triggering multiple times from a single press due to mechanical bouncing", solution: "Implemented software debouncing by recording the last stable state and timestamp of each button, only registering a new press after a 50ms quiet window with no state changes." },
+      { problem: "Synchronising LED flash timing with buzzer tones without blocking the button-reading loop", solution: "Replaced all delay() calls with millis()-based non-blocking timing, allowing the game loop to continue checking button inputs even while a tone or LED flash sequence was in progress." },
+    ],
+    specs: {
+      "Microcontroller": "Arduino UNO",
+      "Interface": "Custom Wokwi PCB Shield (soldered)",
+      "Inputs": "4x Coloured Push Buttons (Green, Yellow, Blue, Red)",
+      "Outputs": "4x LEDs + Passive Buzzer",
+      "Assembly": "Hand-soldered PCB",
+      "Game Logic": "Random sequence, grows each round",
+      "Debouncing": "Software (50ms window)",
+      "Timing": "Non-blocking via millis()",
+      "Libraries": "Arduino built-in only",
     },
     github: "",
   },
