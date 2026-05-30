@@ -569,7 +569,6 @@ export default function Portfolio() {
       {selected && !editTarget && !deleteTarget && <ProjectModal project={selected} onClose={() => setSelected(null)} onEdit={() => setEditTarget(selected)} onDelete={() => setDeleteTarget(selected)} isAdmin={isAdmin} />}
       {(showForm || editTarget) && <ProjectForm initial={editTarget || null} onSave={editTarget ? handleEdit : handleAdd} onCancel={() => { setShowForm(false); setEditTarget(null); }} />}
       {deleteTarget && <DeleteConfirm project={deleteTarget} onConfirm={handleDelete} onCancel={() => setDeleteTarget(null)} />}
-      /* settings modal disabled */
     </div>
   );
 }
