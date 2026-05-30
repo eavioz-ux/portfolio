@@ -73,12 +73,8 @@ function useReveal() {
 }
 
 /* ══════════════ BACKGROUND ══════════════ */
-function GridBG() {
-  return <div style={{ position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none", opacity: 0.035 }}><svg width="100%" height="100%"><defs><pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse"><path d="M 60 0 L 0 0 0 60" fill="none" stroke="#fff" strokeWidth="0.5" /></pattern></defs><rect width="100%" height="100%" fill="url(#grid)" /></svg></div>;
-}
-function GlowOrb({ top, left, color, size }) {
-  return <div style={{ position: "absolute", top, left, width: size || 500, height: size || 500, background: color, borderRadius: "50%", filter: "blur(120px)", opacity: 0.07, pointerEvents: "none" }} />;
-}
+function GridBG() { return null; }
+function GlowOrb() { return null; }
 
 /* ══════════════ STYLES ══════════════ */
 const F = "'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif";
@@ -459,10 +455,10 @@ export default function Portfolio() {
   const filtered = filter === "All" ? projects : projects.filter(p => p.category === filter);
   const initials = (profile.firstName?.[0] || "") + (profile.lastName?.[0] || "");
 
-  if (loading) return <div style={{ fontFamily: F, background: "#0a0a0a", minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}><div style={{ color: "#555", fontSize: 15 }}>Loading...</div></div>;
+  if (loading) return <div style={{ fontFamily: F, background: "#0d0d0f", minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}><div style={{ color: "#555", fontSize: 15 }}>Loading...</div></div>;
 
   return (
-    <div style={{ fontFamily: F, background: "#0a0a0a", minHeight: "100vh", color: "#f5f5f7", position: "relative", overflow: "hidden" }}>
+    <div style={{ fontFamily: F, background: "#0d0d0f", minHeight: "100vh", color: "#f5f5f7", position: "relative", overflow: "hidden" }}>
       <style>{"\
         * { margin: 0; padding: 0; box-sizing: border-box; }\
         html { scroll-behavior: smooth; }\
@@ -474,6 +470,7 @@ export default function Portfolio() {
         @media (min-width: 641px) { .nav-burger { display: none !important; } .mobile-menu { display: none !important; } }\
       "}</style>
       <GridBG />
+      <div style={{ position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none", background: "radial-gradient(ellipse 80% 40% at 50% 0%, rgba(255,255,255,0.03) 0%, transparent 70%)" }} />
 
       {isAdmin && <div style={{ position: "fixed", bottom: 16, right: 16, zIndex: 200, background: "rgba(59,130,246,0.15)", border: "1px solid rgba(59,130,246,0.3)", borderRadius: 10, padding: "6px 14px", fontSize: 11, color: "#3b82f6", fontWeight: 600, backdropFilter: "blur(8px)" }}>Admin Mode</div>}
 
