@@ -455,10 +455,10 @@ export default function Portfolio() {
   const filtered = filter === "All" ? projects : projects.filter(p => p.category === filter);
   const initials = (profile.firstName?.[0] || "") + (profile.lastName?.[0] || "");
 
-  if (loading) return <div style={{ fontFamily: F, background: "#0d0d0f", minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}><div style={{ color: "#555", fontSize: 15 }}>Loading...</div></div>;
+  if (loading) return <div style={{ fontFamily: F, background: "#111110", minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}><div style={{ color: "#555", fontSize: 15 }}>Loading...</div></div>;
 
   return (
-    <div style={{ fontFamily: F, background: "#0d0d0f", minHeight: "100vh", color: "#f5f5f7", position: "relative", overflow: "hidden" }}>
+    <div style={{ fontFamily: F, background: "#111110", minHeight: "100vh", color: "#f5f5f7", position: "relative", overflow: "hidden" }}>
       <style>{"\
         * { margin: 0; padding: 0; box-sizing: border-box; }\
         html { scroll-behavior: smooth; }\
@@ -470,9 +470,9 @@ export default function Portfolio() {
         @media (min-width: 641px) { .nav-burger { display: none !important; } .mobile-menu { display: none !important; } }\
       "}</style>
       <GridBG />
-      <div style={{ position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none", background: "radial-gradient(ellipse 80% 40% at 50% 0%, rgba(255,255,255,0.03) 0%, transparent 70%)" }} />
+      <div style={{ position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none", background: "radial-gradient(ellipse 60% 30% at 50% 0%, rgba(255,255,255,0.025) 0%, transparent 100%)" }} />
 
-      {isAdmin && <div style={{ position: "fixed", bottom: 16, right: 16, zIndex: 200, background: "rgba(59,130,246,0.15)", border: "1px solid rgba(59,130,246,0.3)", borderRadius: 10, padding: "6px 14px", fontSize: 11, color: "#3b82f6", fontWeight: 600, backdropFilter: "blur(8px)" }}>Admin Mode</div>}
+      {isAdmin && <div style={{ position: "fixed", bottom: 16, right: 16, zIndex: 200, background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 10, padding: "6px 14px", fontSize: 11, color: "#888", fontWeight: 600, backdropFilter: "blur(8px)" }}>Admin Mode</div>}
 
       <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 100, background: scrolled ? "rgba(10,10,10,0.8)" : "transparent", backdropFilter: scrolled ? "blur(24px) saturate(180%)" : "none", borderBottom: scrolled ? "1px solid rgba(255,255,255,0.06)" : "none", transition: "all 0.3s ease", padding: "0 32px", height: 52, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <span onClick={handleLogoClick} style={{ fontSize: 15, fontWeight: 600, color: "#f5f5f7", letterSpacing: -0.3, cursor: "pointer", userSelect: "none" }}>{initials}</span>
@@ -498,13 +498,13 @@ export default function Portfolio() {
       </div>}
 
       <section style={{ position: "relative", paddingTop: 140, paddingBottom: 60, textAlign: "center", maxWidth: 820, margin: "0 auto", padding: "140px 24px 60px" }}>
-        <GlowOrb top="-200px" left="-150px" color="#3b82f6" size={600} />
-        <GlowOrb top="-100px" left="60%" color="#8b5cf6" size={500} />
+        
+        
         <div style={{ position: "relative", zIndex: 1 }}>
-          <p style={{ fontSize: 14, fontWeight: 500, color: "#555", letterSpacing: 3, textTransform: "uppercase", animation: "fadeUp 0.6s ease", marginBottom: 20 }}>{profile.tagline}</p>
+          <p style={{ fontSize: 14, fontWeight: 500, color: "#4a4a4a", letterSpacing: 4, textTransform: "uppercase", animation: "fadeUp 0.6s ease", marginBottom: 20 }}>{profile.tagline}</p>
           <h1 style={{ fontSize: "clamp(52px, 9vw, 88px)", fontWeight: 700, lineHeight: 0.95, letterSpacing: "-0.03em", animation: "fadeUp 0.6s ease 0.1s", animationFillMode: "both" }}>{profile.firstName}</h1>
           <h1 style={{ fontSize: "clamp(52px, 9vw, 88px)", fontWeight: 700, lineHeight: 0.95, letterSpacing: "-0.03em", animation: "fadeUp 0.6s ease 0.15s", animationFillMode: "both", marginTop: 4 }}>{profile.lastName}</h1>
-          <div style={{ width: 60, height: 2, background: "linear-gradient(90deg, #3b82f6, #8b5cf6)", margin: "24px auto 0", borderRadius: 2, animation: "lineDraw 0.8s ease 0.4s both" }} />
+          <div style={{ width: 60, height: 2, background: "rgba(255,255,255,0.15)", margin: "28px auto 0", borderRadius: 1, animation: "lineDraw 0.8s ease 0.4s both" }} />
           <p style={{ fontSize: 17, color: "#777", marginTop: 24, lineHeight: 1.7, maxWidth: 520, margin: "24px auto 0", animation: "fadeUp 0.6s ease 0.25s", animationFillMode: "both" }}>{profile.bio}</p>
           <div style={{ display: "flex", justifyContent: "center", gap: 12, marginTop: 36, flexWrap: "wrap", animation: "fadeUp 0.6s ease 0.35s", animationFillMode: "both" }}>
             <SocialLink href={profile.linkedin} label="LinkedIn">{LinkedInIcon()}</SocialLink>
@@ -556,14 +556,14 @@ export default function Portfolio() {
 
       <SkillsSection skills={skills} onUpdate={persistSkills} isAdmin={isAdmin} />
 
-      <section id="about" style={{ scrollMarginTop: 64, borderTop: "1px solid rgba(255,255,255,0.05)", padding: "80px 24px", textAlign: "center", position: "relative", zIndex: 1 }}>
+      <section id="about" style={{ scrollMarginTop: 64, borderTop: "1px solid rgba(255,255,255,0.07)", padding: "80px 24px", textAlign: "center", position: "relative", zIndex: 1 }}>
         <div style={{ maxWidth: 580, margin: "0 auto" }}>
           <h2 style={{ fontSize: 30, fontWeight: 700, letterSpacing: "-0.02em" }}>About Me</h2>
           <p style={{ fontSize: 15, lineHeight: 1.8, color: "#888", marginTop: 20 }}>{profile.aboutText}</p>
         </div>
       </section>
 
-      <section id="contact" style={{ scrollMarginTop: 64, borderTop: "1px solid rgba(255,255,255,0.05)", padding: "56px 24px", textAlign: "center", position: "relative", zIndex: 1 }}>
+      <section id="contact" style={{ scrollMarginTop: 64, borderTop: "1px solid rgba(255,255,255,0.07)", padding: "56px 24px", textAlign: "center", position: "relative", zIndex: 1 }}>
         <h2 style={{ fontSize: 24, fontWeight: 700, letterSpacing: "-0.02em" }}>Let's Connect</h2>
         <p style={{ color: "#555", fontSize: 14, marginTop: 10 }}>Open to collaborations, internships, and interesting projects.</p>
         <div style={{ display: "flex", justifyContent: "center", gap: 12, marginTop: 28, flexWrap: "wrap" }}>
