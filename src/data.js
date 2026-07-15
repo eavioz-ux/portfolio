@@ -139,7 +139,7 @@ export const PROJECTS = [
     id: "proj-4",
     title: "Soldering Iron Stand \u2014 Parametric CAD Design & 3D Print",
     category: "3D Design",
-    thumbnail: "/projects/solder-stand-cover.png",
+    thumbnail: "/projects/solder-stand-cover.png.jpeg",
     videoUrl: "",
     media: [
       "/projects/solder-stand-real.jpg",
