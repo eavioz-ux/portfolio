@@ -32,6 +32,7 @@ export const SKILLS = [
   { id: "s19", name: "PCB Soldering", category: "Electronics" },
   { id: "s20", name: "FreeCAD (Parametric CAD)", category: "Fabrication" },
   { id: "s21", name: "Bambu Studio (Slicing)", category: "Fabrication" },
+  { id: "s22", name: "Multi-Body Assembly & Polar Patterns", category: "Fabrication" },
 ];
 
 export const PROJECTS = [
@@ -166,6 +167,39 @@ export const PROJECTS = [
       "Slicing": "Bambu Studio",
       "Printing": "FDM (PLA)",
       "Personalization": "\u201cIdan\u201d embossed relief",
+    },
+    github: "",
+  },
+  {
+    id: "proj-5",
+    title: "Quadcopter Frame — Parametric Multi-Body CAD Design",
+    category: "3D Design",
+    thumbnail: "/projects/drone-cover.jpg",
+    videoUrl: "",
+    media: [
+      "/projects/drone-freecad-tree.jpg",
+      "/projects/drone-sketch.jpg",
+      "/projects/drone-motor-mount.jpg",
+      "/projects/drone-topplate-sketch.jpg",
+      "/projects/drone-assembly.jpg",
+    ],
+    summary: "Designed a complete quadcopter drone frame in FreeCAD as a fully parametric, multi-body assembly — four arms generated from a single master arm by a polar pattern, a top/bottom plate stack on standoffs, and hardware-accurate motor mounts and electronics bay.",
+    description: "Modeled a full X-configuration quadcopter frame in FreeCAD 1.1 using the Part Design workbench, built entirely from constraint-driven sketches and parametric features rather than freehand geometry. The design is organized as a multi-body assembly: a main frame carrying four arms, a separate top plate, and four cylindrical standoffs that join the top and bottom plates into a rigid electronics stack. Rather than modeling each arm individually, a single fully-dimensioned master arm — complete with its motor-mount hole pattern — is replicated around the central axis with a polar (circular) pattern, so all four arms stay perfectly symmetric and any dimensional edit propagates across the whole frame at once. Each arm tip carries a standard brushless-motor mounting pattern (Ø3.3 mm holes on an 8 × 6 mm grid), and the chamfered octagonal top plate integrates a square cut-out for a flight-controller / camera stack and an oval slot for wiring and a battery strap. Every hole spacing, plate dimension, and standoff position is dimensioned and constrained, so the entire frame is editable from its driving parameters. The feature tree combines Pad, Pocket, Fillet, and PolarPattern operations across the separate bodies, demonstrating a structured, assembly-level parametric workflow. This is a pure CAD exercise — the focus is the modeling methodology and design intent rather than a physical build.",
+    techStack: ["FreeCAD 1.1", "Part Design Workbench", "Parametric Modeling", "Sketch Constraints", "Polar (Circular) Pattern", "Multi-Body Assembly", "Pad / Pocket / Fillet"],
+    challenges: [
+      { problem: "Keeping all four arms and their motor mounts perfectly symmetric while the frame stays fully editable", solution: "Modeled a single fully-constrained master arm with its motor-mount pattern, then generated the remaining three with a polar pattern about the central axis — guaranteeing the four arms are identical and letting a single edit update all of them at once." },
+      { problem: "Building a rigid top/bottom plate stack from separate parts that register to each other exactly", solution: "Modeled the top plate and the four standoffs as distinct Part Design bodies driven by shared, matching hole-spacing dimensions, so the columns and plates align precisely and the stack assembles without interference." },
+      { problem: "Making the frame accept real hardware — motors, flight controller, wiring — rather than arbitrary geometry", solution: "Dimensioned each arm tip to a standard Ø3.3 mm / 8 × 6 mm brushless-motor bolt pattern and sized the top-plate cut-outs (square electronics bay + oval wiring slot) to real component footprints, keeping every feature parametric and hardware-accurate." },
+    ],
+    specs: {
+      "CAD Software": "FreeCAD 1.1 (Part Design)",
+      "Configuration": "Quadcopter X-frame",
+      "Structure": "Multi-body (frame + top plate + 4 standoffs)",
+      "Arm Generation": "Single master arm × polar pattern (4×)",
+      "Motor Mounts": "Ø3.3 mm holes, 8 × 6 mm pattern",
+      "Electronics Bay": "Square cut-out + oval wiring slot",
+      "Features": "Pad / Pocket / Fillet / PolarPattern",
+      "Modeling": "Fully constraint-driven & parametric",
     },
     github: "",
   },
