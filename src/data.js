@@ -33,9 +33,47 @@ export const SKILLS = [
   { id: "s20", name: "FreeCAD (Parametric CAD)", category: "Fabrication" },
   { id: "s21", name: "Bambu Studio (Slicing)", category: "Fabrication" },
   { id: "s22", name: "Multi-Body Assembly & Polar Patterns", category: "Fabrication" },
+  { id: "s23", name: "I\u00b2S Digital Audio", category: "Electronics" },
+  { id: "s24", name: "REST APIs & HTTPS", category: "Communication" },
+  { id: "s25", name: "LLM / AI API Integration", category: "Programming" },
 ];
 
 export const PROJECTS = [
+  {
+    id: "proj-6",
+    title: "AI Voice Assistant — ESP32-S3 Cloud-Connected Voice Device",
+    category: "Embedded AI",
+    thumbnail: "/projects/voice-assistant-cover.jpg",
+    videoUrl: "/projects/voice-assistant-demo.mp4",
+    media: [
+      "/projects/voice-assistant-wiring.jpg",
+      "/projects/voice-assistant-board.jpg",
+      "/projects/voice-assistant-setup.jpg",
+      "/projects/voice-assistant-serial-log.jpg",
+      "/projects/voice-assistant-pinout.jpg",
+    ],
+    summary: "Built a standalone push-to-talk voice assistant on an ESP32-S3: it records speech over I²S, sends it through a cloud speech-to-text → LLM → text-to-speech pipeline over HTTPS, and answers aloud in Hebrew or English, with live web search, real-time clock awareness, and conversation memory.",
+    description: "Designed and built a self-contained voice assistant around an ESP32-S3 (N16R8: 16MB Flash, 8MB OPI PSRAM), with the board acting as the device’s ears and mouth while the language model runs in the cloud — a deliberate architectural decision, since an LLM needs gigabytes of memory against the chip’s 512KB of SRAM. Holding the BOOT button records the question from an INMP441 MEMS microphone over I²S at 16kHz into a PSRAM buffer; on release, the firmware applies an 80Hz high-pass filter and automatic gain normalization, then streams the audio as a WAV file over HTTPS to OpenAI’s speech-to-text API. The transcript is sent to an LLM through the Responses API with a web-search tool enabled and the current Israel date and time injected from an NTP-synced clock, so the assistant can answer questions about weather, news, and time. Conversation context is preserved between questions via response chaining. The answer is converted to 24kHz PCM speech, downloaded into PSRAM, volume-scaled, and played through a MAX98357A Class-D I²S amplifier and speaker. A status RGB LED shows each stage: blue while listening, yellow while thinking, green while speaking, and red on error. The firmware is written in C++ in the Arduino IDE and includes custom zero-copy upload and download stream classes, automatic Wi-Fi reconnection, and a retry path when the conversation context expires. Each stage — board bring-up, microphone, amplifier, Wi-Fi/HTTPS, transcription, and the full assistant — was built and verified independently before integration, using measured metrics (peak level, noise floor, SNR, clipping count, and sample-rate checks) rather than listening alone.",
+    techStack: ["ESP32-S3", "C++", "Arduino IDE", "I²S Digital Audio", "INMP441 MEMS Microphone", "MAX98357A Class-D Amplifier", "PSRAM", "Wi-Fi / HTTPS", "OpenAI API", "Speech-to-Text", "LLM + Web Search", "Text-to-Speech", "NTP", "ArduinoJson", "DSP Filtering"],
+    challenges: [
+      { problem: "Uploads to the speech-to-text API failed with a connection error, and recording was capped at 3 seconds, because two copies of the audio left too little RAM for the TLS handshake (~40–50KB)", solution: "Enabled the 8MB OPI PSRAM for the audio buffers and wrote a custom zero-copy UploadStream class that sends the multipart header, WAV header, and raw PCM directly from memory with no intermediate copy, which freed internal RAM for encryption and extended the maximum recording length." },
+      { problem: "Recorded speech was noisy and distorted even though the clipping counter read zero", solution: "Isolated the fault with a diagnostic build that logged both I²S slots separately, which showed the speech on one slot and near-silence on the other. Switched the microphone to stereo capture keeping only the active slot, then added an 80Hz high-pass filter and peak normalization, reaching a 30–39dB SNR with a noise floor of about 14 counts." },
+      { problem: "Assistant replies sounded distorted through the speaker, although the startup beep played cleanly", solution: "Ran an isolated tone test at increasing amplitudes: peaks of 2,000 and 8,000 played cleanly, while 16,000 distorted. Added a software volume scale on the speech buffer that keeps playback peaks below the distortion threshold of the amplifier and speaker." },
+    ],
+    specs: {
+      "Microcontroller": "ESP32-S3-DevKitC-1 (N16R8: 16MB Flash, 8MB OPI PSRAM)",
+      "Microphone": "INMP441 MEMS, I²S, 16kHz",
+      "Amplifier": "MAX98357A Class-D I²S, 3W, BTL output",
+      "Audio Output": "24kHz, 16-bit mono PCM",
+      "AI Pipeline": "gpt-4o-mini-transcribe → gpt-6-luna + web search → gpt-4o-mini-tts",
+      "Languages": "Hebrew & English",
+      "Recording SNR": "30–39 dB",
+      "Response Time": "~10 s from button release to speech",
+      "Status Indicator": "RGB LED: listen / think / speak / error",
+      "Libraries": "ESP_I2S, WiFiClientSecure, HTTPClient, ArduinoJson",
+    },
+    github: "https://github.com/eavioz-ux/esp32-voice-assistant",
+  },
   {
     id: "proj-1",
     title: "4WD Smart Car \u2014 Arduino Multi-Mode Vehicle",
