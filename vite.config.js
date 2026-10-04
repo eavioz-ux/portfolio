@@ -140,9 +140,17 @@ function seoSnapshotPlugin() {
     name: 'seo-snapshot',
     apply: 'build', // only on `vite build` (Vercel); dev server unchanged
     transformIndexHtml(html) {
+      // Anti-flash: this tiny script runs BEFORE the page body is drawn and adds
+      // class "js" to <html>. The CSS then hides the plain-HTML snapshot for real
+      // browsers (React draws the site a moment later), while crawlers and AI
+      // agents that don't run JavaScript never get the class and still see it.
+      // The dark page background avoids a white flash before React mounts.
+      const antiFlash =
+        `<script>document.documentElement.classList.add('js')</script>\n` +
+        `    <style>html,body{background:#111110;margin:0}.js #static-snapshot{display:none}</style>`
       return html
         .replace('<div id="root"></div>', `<div id="root">${snapshotHtml()}</div>`)
-        .replace('</head>', `    ${jsonLd()}\n  </head>`)
+        .replace('</head>', `    ${antiFlash}\n    ${jsonLd()}\n  </head>`)
     },
     generateBundle() {
       const today = new Date().toISOString().slice(0, 10)
